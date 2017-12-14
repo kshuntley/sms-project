@@ -1,0 +1,665 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Proof Of Concept Tile (and Tile Dev) Document</title>
+<style>
+	body {
+		background-color: #fbf9fc;
+	}
+	
+	/* Basic Tile 
+		- Apply to a <div> (or any block element)
+		Defaults to a AA Dark Teal Portrait with Dark Text
+	*/	
+	.sms-tile {
+		background-color: #30b889; /* AA Dark Teal by Default */
+		width: 150px;              /* Default dimensions 150px by 180px */
+		height: 180px;
+		color: #373737;
+		font-family: Calibri, Helvetica, Arial, sans-serif; 
+		padding: 0; 
+		box-sizing: border-box;
+		background-repeat: no-repeat;
+		background-size: 30px;
+		position: relative;
+		float: left;
+		margin: 0.5em;
+		font-weight: 600;
+	}
+		/* Default hyperlink fixes */
+		.sms-tile a:link, .sms-tile a:visited, .sms-tile a:hover, .sms-tile a:active { color: #fff; }
+		.sms-tile a:hover {text-decoration: none;}
+	
+	/* Tile Layouts */
+		/* Orientation */
+		.sms-portrait { width: 150px; height: 180px; }
+		.sms-tallport { width: 150px; height: 220px; }
+
+		/* Slightly Bigger Trials */
+		.sms-tallport2 { width: 180px; height: 270px; }
+		.sms-portrait2 { width: 150px; height: 200px; } 	
+	
+		/* Contents & Img positioning */
+		.sms-portrait div { margin: 0 0.5em 0.5em 0.5em; }
+	
+	.sms-portrait2 div { margin: 0 0.5em 0.5em 0.5em;}
+
+		.sms-tallport div { margin: 0.5em 0.5em 0 0.5em; }
+		.sms-tallport img { position: absolute; bottom: 0; }
+
+		.sms-tallport2 div { margin: 0.5em 0.5em 0 0.5em; }
+		.sms-tallport2 img { position: absolute; bottom: 0; }	
+	
+	
+		/* Shadow Effect - Not recommended as it doesn't work with triangles */
+		.sms-shadow { box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1); }
+	
+
+	/* Triangles */
+	.sms-tri-bl::after, .sms-tri-br::after, .sms-tri-tl::after, .sms-tri-tr::after {
+		content: '';
+		position: absolute;
+		border: 12px solid transparent;		
+	}
+	
+		/* Top Left */
+		.sms-tri-tl::after {
+			top: 0;
+			left: 0;
+			border-bottom-color: #fbf9fc; /* This is the std bg color */
+			border-left-color: #fbf9fc;
+		}
+
+		/* top Right  */
+		.sms-tri-tr::after {
+			top: 0;
+			right: 0;
+			border-top-color: #fbf9fc; /* This is the std bg color */
+			border-right-color: #fbf9fc;
+		}		
+	
+		/* Bottom Left */
+		.sms-tri-bl::after {
+			bottom: 0;
+			left: 0;
+			border-bottom-color: #fbf9fc; /* This is the std bg color */
+			border-left-color: #fbf9fc;
+		}
+
+		/* Bottom Right */
+		.sms-tri-br::after {
+			bottom: 0;
+			right: 0;
+			border-bottom-color: #fbf9fc; /* This is the std bg color */
+			border-right-color: #fbf9fc;
+		}	
+
+	
+	/* Text */
+	
+		/* Sizes - Class for dealing with people who like to make very long sentences when you really want shorter sentences because shorter sentences work better. */
+		.sms-text-small {font-size: .8em;}
+		.sms-text-very-small {font-size: .65em;}
+		.sms-text-big {font-size: 1.2em;}
+	
+		/* Colors */
+		.sms-text-light, .sms-text-light a:link, .sms-text-light a:visited, .sms-text-light a:hover, .sms-text-light a:active { color: #fff; }
+		.sms-text-dark, .sms-text-dark a:link, .sms-text-dark a:visited, .sms-text-dark a:hover, .sms-text-dark a:active { color: #373737; }
+	
+	/* Colors */
+	
+		/* Teals */
+		.sms-color-teal {background-color: #3fd5ae;}
+		.sms-color-dark-teal {background-color: #30b889;}
+		.sms-color-aa-dark-teal {background-color: #00a887;}
+		
+		/* Blues */
+		.sms-color-denim-blue {background-color: #5ab3e8;}
+		.sms-color-azure-blue {background-color: #4596ca;}
+		
+		/* Lavendars */
+		.sms-color-lavendar {background-color: #8c84d6;}
+		.sms-color-dark-lavendar {background-color: #7472c0;}	
+	
+		/* Peaches */
+		/* Peaches come in a can. They were put there by a man in a factory downtown. */
+		.sms-color-fresh-peach {background-color: #f8a17a;}
+		.sms-color-ripe-peach {background-color: #f58b6d;}	
+		.sms-color-aa-dark-peach {background-color: #e86d3d;}	
+	
+	
+		/* Yellows */
+		.sms-color-lemon-yellow {background-color: #f8ed52;}
+		.sms-color-sunshine-yellow {background-color: #f7e442;}
+	
+		/* Greens */
+		.sms-color-minty-green {background-color: #87cca2; color: #373737}
+		.sms-color-spearmint {background-color: #24cd79;}	
+		.sms-color-aa-green {background-color: #06a951;}
+	
+		/* Aquas */
+		.sms-color-aqua {background-color: #1ccfc9;}
+		.sms-color-deep-aqua {background-color: #00aead;}		
+		.sms-color-aa-aqua {background-color: #19a29b;}		
+		
+		/* Mauves */
+		.sms-color-powder-mauve {background-color: #cd88da;}
+		.sms-color-mauve {background-color: #aa7bc9;}	
+		
+		/* Pinks */
+		.sms-color-flamingo {background-color: #f185cf;}	
+		.sms-color-bubblegum {background-color: #d082b7;}
+		.sms-color-aa-pink {background-color: #d25299;}		
+	
+		/* Golds */
+		.sms-color-apricot {background-color: #fec35a;}	
+		.sms-color-goldie {background-color: #f6b220;}	
+	
+		/* Greys */
+		.sms-color-black {background-color: #000;}	
+		.sms-color-charcoal {background-color: #373737;}
+		.sms-color-grey1 {background-color: #4d4d4d;}	
+		.sms-color-grey2 {background-color: #818185;}
+		.sms-color-grey3 {background-color: #a7a9ac;}
+		.sms-color-grey4 {background-color: #d1d2d4;}
+		.sms-color-grey5 {background-color: #e7e7e8;}	
+	
+		/* Colors from the MC theme */
+		.sms-color-intranet-blue {background-color: #4d67ae;}
+		.sms-color-intranet-turquoise {background-color: #1e988a;}
+		.sms-color-intranet-purple {background-color: #645eb3;}
+	
+	
+	/* Go Button */
+	span.sms-go-btn {
+		background-color: #333;
+		color: #fff;
+		padding: 0.1em 0.2em;
+		text-align: right;
+		content: "...";
+		display: inline-block;
+		bottom: 10px;
+		right: 30px;
+		position: absolute; 
+		font-weight: normal;
+	}
+	
+		/* Shift the Go so it doesn't interfere with the triangle */
+		.sms-tri-br .sms-go-btn {
+			bottom: 10px;
+			right: 30px;		
+		}
+		.sms-tri-bl .sms-go-btn {
+			bottom: 10px;
+			right: 10px;		
+		}	
+
+	
+	
+	/* Ribbons - based on http://www.cssportal.com/css-ribbon-generator/ */
+
+	.sms-ribbon {
+		position: absolute;
+		right: -11px; top: -5px;
+		z-index: 1;
+		overflow: hidden;
+		width: 75px; height: 75px;
+		text-align: right;
+
+	}	
+	.sms-ribbon span {
+		font-size: 10px;
+		font-weight: bold;
+		color: #fff;
+		text-transform: uppercase;
+		text-align: center;
+		line-height: 20px;
+		transform: rotate(45deg);
+		-webkit-transform: rotate(45deg);
+		width: 100px;
+		display: block;
+		background-color: #b11030;
+		box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+		position: absolute;
+		top: 19px; right: -21px;
+		
+	}
+	
+	.sms-ribbon span::before {
+		content: "";
+		position: absolute; left: 0px; top: 100%;
+		z-index: -1;
+		border-left: 3px solid #b11030;
+		border-right: 3px solid transparent;
+		border-bottom: 3px solid transparent;
+		border-top: 3px solid #b11030;
+	}
+	.sms-ribbon span::after {
+		content: "";
+		position: absolute; right: 0px; top: 100%;
+		z-index: -1;
+		border-left: 3px solid transparent;
+		border-right: 3px solid #b11030;
+		border-bottom: 3px solid transparent;
+		border-top: 3px solid #b11030;
+	}
+	
+		/* Bottom Left Ribbons */	
+		.sms-ribbon-bl {
+			position: absolute;
+			left: -8px; bottom: 0;
+			z-index: 1;
+			overflow: hidden;
+			width: 80px; height: 80px;
+			text-align: right;
+
+		}
+		.sms-ribbon-bl span {
+			font-size: 10px;
+			font-weight: bold;
+			color: #FFF;
+			text-transform: uppercase;
+			text-align: center;
+			line-height: 20px;
+			transform: rotate(45deg);
+			-webkit-transform: rotate(45deg);
+			width: 130px;
+			display: block;
+			background-color: #b11030;
+			box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+			position: absolute;
+			bottom: 20px; left: -30px;
+		}	
+	
+		/* Ribbon Colors */
+		.sms-ribbon-red span {background-color: #b11030;}
+		.sms-ribbon-red span::before {border-left: 3px solid #b11030; border-top: 3px solid #b11030;}
+		.sms-ribbon-red span::after  {border-right: 3px solid #b11030; border-top: 3px solid #b11030;}
+
+		.sms-ribbon-pink span {background-color: #d25299;}
+		.sms-ribbon-pink span::before {border-left: 3px solid #d25299; border-top: 3px solid #d25299;}
+		.sms-ribbon-pink span::after  {border-right: 3px solid #d25299; border-top: 3px solid #d25299;}
+
+		.sms-ribbon-purple span {background-color: #663399;}
+		.sms-ribbon-purple span::before {border-left: 3px solid #663399; border-top: 3px solid #663399;}
+		.sms-ribbon-purple span::after  {border-right: 3px solid #663399; border-top: 3px solid #663399;}	
+
+		.sms-ribbon-blue span {background-color: #4768d6;}
+		.sms-ribbon-blue span::before {border-left: 3px solid #4768d6; border-top: 3px solid #4768d6;}
+		.sms-ribbon-blue span::after  {border-right: 3px solid #4768d6; border-top: 3px solid #4768d6;}
+
+		.sms-ribbon-salmon span {background-color: #d64541;}
+		.sms-ribbon-salmon span::before {border-left: 3px solid #d64541; border-top: 3px solid #d64541;}
+		.sms-ribbon-salmon span::after  {border-right: 3px solid #d64541; border-top: 3px solid #d64541;}	
+
+		.sms-ribbon-aqua span {background-color: #1e988a;}
+		.sms-ribbon-aqua span::before {border-left: 3px solid #1e988a; border-top: 3px solid #1e988a;}
+		.sms-ribbon-aqua span::after  {border-right: 3px solid #1e988a; border-top: 3px solid #1e988a;}		
+
+		.sms-ribbon-goldie span {background-color: #f6b220; color: #373737;}
+		.sms-ribbon-goldie span::before {border-left: 3px solid #f6b220; border-top: 3px solid #f6b220;}
+		.sms-ribbon-goldie span::after  {border-right: 3px solid #f6b220; border-top: 3px solid #f6b220;}	
+
+		.sms-ribbon-sunshine-yellow span {background-color: #F7E442; color: #373737;}
+		.sms-ribbon-sunshine-yellow span::before {border-left: 3px solid #F7E442; border-top: 3px solid #F7E442;}
+		.sms-ribbon-sunshine-yellow span::after  {border-right: 3px solid #F7E442; border-top: 3px solid #F7E442;}	
+
+		.sms-ribbon-green span {background-color: #06A951;}
+		.sms-ribbon-green span::before {border-left: 3px solid #06A951; border-top: 3px solid #06A951;}
+		.sms-ribbon-green span::after  {border-right: 3px solid #06A951; border-top: 3px solid #06A951;}	
+		
+</style>
+</head>
+
+<body>
+
+<div style="border: 1px solid #676666">
+<h1 style="text-align: center">Homepage Tile Examples</h1>
+
+<p style="padding: 1em;"><i>
+Blocks are given classes of:
+</i>
+</p>
+<ul>
+<li><b>.sms-tile</b> - basic tile layout</li>
+<li><b>.sms-tri-bl</b> - add a triangle to the bottom left</li>
+<li><b>.sms-portrait</b> - give the tile dimensions of 150px by 180px</li>
+</ul>
+<p style="padding: 1em;"><i>Standard TAFE Colors applied to the tiles through the use of styles:</i></p>
+<ul>
+<li><b>.sms-color-teal <span style="color: #3fd5ae;">color: #3fd5ae;</span></b></li>
+<li><b>.sms-color-dark-teal <span style="color: #30b889;">color: #30b889;</span></b></li>
+<li><b>.sms-color-aa-dark-teal <span style="color: #00a887;">color: #00a887;</span></b></li>
+<li><b>.sms-color-denim-blue <span style="color: #5ab3e8;">color: #5ab3e8;</span></b></li>
+<li><b>.sms-color-azure-blue <span style="color: #4596ca;">color: #4596ca;</span></b></li>
+<li><b>.sms-color-lavendar <span style="color: #8c84d6;">color: #8c84d6;</span></b></li>
+<li><b>.sms-color-dark-lavendar <span style="color: #7472c0;">color: #7472c0;</span></b></li>
+<li><b>.sms-color-fresh-peach <span style="color: #f8a17a;">color: #f8a17a;</span></b></li>
+<li><b>.sms-color-ripe-peach <span style="color: #f58b6d;">color: #f58b6d;</span></b></li>
+<li><b>.sms-color-aa-dark-peach <span style="color: #e86d3d;">color: #e86d3d;</span></b></li>
+<li><b>.sms-color-lemon-yellow <span style="color: #f8ed52;">color: #f8ed52;</span></b></li>
+<li><b>.sms-color-sunshine-yellow <span style="color: #f7e442;">color: #f7e442;</span></b></li>
+<li><b>.sms-color-minty-green <span style="color: #87cca2;">color: #87cca2;</span></b></li>
+<li><b>.sms-color-spearmint <span style="color: #24cd79;">color: #24cd79;</span></b></li>
+<li><b>.sms-color-aa-green <span style="color: #06a951;">color: #06a951;</span></b></li>
+<li><b>.sms-color-aqua <span style="color: #1ccfc9;">color: #1ccfc9;</span></b></li>
+<li><b>.sms-color-deep-aqua <span style="color: #00aead;">color: #00aead;</span></b></li>
+<li><b>.sms-color-aa-deep-aqua <span style="color: #19a29b;">color: #19a29b;</span></b></li>
+<li><b>.sms-color-powder-mauve <span style="color: #cd88da;">color: #cd88da;</span></b></li>
+<li><b>.sms-color-mauve <span style="color: #aa7bc9;">color: #aa7bc9;</span></b></li>
+<li><b>.sms-color-flamingo <span style="color: #f185cf;">color: #f185cf;</span></b></li>
+<li><b>.sms-color-bubblegum <span style="color: #d082b7;">color: #d082b7;</span></b></li>
+<li><b>.sms-color-aa-pink <span style="color: #d25299;">color: #d25299;</span></b></li>
+<li><b>.sms-color-apricot <span style="color: #fec35a;">color: #fec35a;</span></b></li>
+<li><b>.sms-color-goldie <span style="color: #f6b220;">color: #f6b220;</span></b></li>
+</ul>
+</div>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-teal">
+	<img src="gfx/TILE_Induction_150.jpg" width="150" height="100" alt="Doormat with 'Welcome on Board'"  /> 
+	<div>Start Your Induction Now <span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-dark-teal">
+	<img src="gfx/HR_150.jpg" width="150" height="100" alt="A desktop with tablet, coffee, calculator and notepad"  /> 
+	<div>HR &amp;<br>Payroll <span class="sms-go-btn">Go...</span></div>
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aa-dark-teal sms-text-light">
+	<img src="gfx/ebs_150.jpg" width="150" height="100" alt="Someone typing on a computer"  /> 
+	<div>TAFE NSW<br> ebs <span class="sms-go-btn">Go...</span></div>
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-denim-blue">
+	<img src="gfx/MOODLE_tiles_stdprocesse_150.jpg" width="150" height="100" alt="Someone working on a computer with a cup of tea"  /> 
+	<div>TAFE NSW Standard Processes <span class="sms-go-btn">Go...</span></div>
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-azure-blue sms-text-light">
+	<img src="gfx/TILE_SOP_1_150.jpg" width="150" height="100" alt="An eager business team"  /> 
+	<div>A guide for selection panel members <span class="sms-go-btn">Go...</span></div>
+
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-lavendar">
+	<img src="gfx/TILE_SOP_2A_150.jpg" width="150" height="100" alt="A manager leading her business team"  /> 
+	<div>Manager's guide to pooled assessment <span class="sms-go-btn">Go...</span></div>
+
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-dark-lavendar sms-text-light">
+	<img src="gfx/TILE_SOP_3_150.jpg" width="150" height="100" alt="Three team members working together in an office"  /> 
+	<div>Manager's guide to priority assessment <span class="sms-go-btn">Go...</span></div>
+
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-fresh-peach">
+	<img src="gfx/CCSales.jpg" width="150" height="100" alt="A phone operator"  /> 
+	<div>MicroByte &gt; Customer Calls - Sales <span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-ripe-peach">
+	<img src="gfx/CCService_150.jpg" width="150" height="100" alt="A happy phone operator"  /> 
+	<div>MicroByte &gt; Customer Calls - Service <span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aa-dark-peach sms-text-light">
+	<img src="gfx/MCO_1_150.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>MicroByte &gt; Managing Complaints <span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-lemon-yellow">
+	<img src="gfx/POC_150.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Purchase Order Guidelines &amp; Compliance <span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-sunshine-yellow">
+	<div class="sms-ribbon"><span>New!</span></div>
+	<img src="gfx/example_image_1.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div><span class="sms-text-very-small">Student Behaviour Management in the Massage Therapy Context</span><span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-minty-green">
+	<img src="gfx/example_image_2.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div><span class="sms-text-small">Tools and Technology used with Dispersed Teams</span><span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-spearmint">
+	<img src="gfx/example_image_3.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Leading Dispersed Teams<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aa-green sms-text-light">
+	<img src="gfx/example_image_4.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Collaborating with Dispersed Teams<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aqua">
+	<div class="sms-ribbon"><span>Default!</span></div>
+	<img src="gfx/example_image_5.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div><span class="sms-text-small">Managing enquiries using CRM and Staff Course Search</span><span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-deep-aqua">
+	<div class="sms-ribbon sms-ribbon-pink"><span>Pink!</span></div>
+	<img src="gfx/example_image_6.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Deep Aqua<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aa-aqua sms-text-light">
+	<div class="sms-ribbon sms-ribbon-purple"><span>Purple!</span></div>
+	<img src="gfx/example_image_7.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on AA Aqua<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-powder-mauve">
+	<div class="sms-ribbon sms-ribbon-blue"><span>Blue!</span></div>
+	<img src="gfx/example_image_8.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Powder Mauve<span class="sms-go-btn">Allez-y...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-mauve sms-text-light">
+	<div class="sms-ribbon sms-ribbon-salmon"><span>Salmon!</span></div>
+	<img src="gfx/example_image_9.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Mauve<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-flamingo">
+	<div class="sms-ribbon sms-ribbon-red"><span>Red!</span></div>
+	<img src="gfx/example_image_1.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Flamingo<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-bubblegum">
+	<div class="sms-ribbon sms-ribbon-aqua"><span>Aqua!</span></div>
+	<img src="gfx/example_image_2.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Bubblegum<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-aa-pink sms-text-light">
+	<div class="sms-ribbon sms-ribbon-green"><span>Green!</span></div>
+	<img src="gfx/example_image_3.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on AA Pink<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-apricot">
+	<div class="sms-ribbon sms-ribbon-goldie"><span>Goldie!</span></div>
+	<img src="gfx/example_image_4.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Apricot<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-bl sms-portrait sms-color-goldie">
+	<div class="sms-ribbon sms-ribbon-sunshine-yellow"><span>Sunshine!</span></div>
+	<img src="gfx/example_image_5.jpg" width="150" height="100" alt="A customer on the phone"  /> 
+	<div>Example Text Here on Goldie<span class="sms-go-btn">Go...</span></div>	
+</div>
+</a>
+
+	<div style="clear:both">&nbsp;</div>
+
+<div style="border: 1px solid #676666">
+<h1 style="text-align: center">Nav Tile Examples</h1>
+
+<p style="padding: 1em;"><i>
+Blocks are given classes of:
+</i></p>
+<ul>
+<li><b>.sms-tile</b> - basic tile layout</li>
+<li><b>.sms-tri-bl</b> - add a triangle to the bottom left</li>
+<li><b>.sms-tallport</b> - give the tile dimensions of 150px by 225px</li>
+</ul>
+</div>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport sms-color-azure-blue sms-text-light">
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad.jpg" width="150" height="145" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-azure-blue sms-text-light">
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+	
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport sms-color-intranet-blue sms-text-light">
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad.jpg" width="150" height="145" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-blue sms-text-light">
+	<div class="sms-ribbon-bl"><span>Ribbon BL!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Sherman2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-purple sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-red"><span>Red!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-turquoise sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-pink"><span>Pink!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-blue sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-purple"><span>Purple!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-blue sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-blue"><span>Blue!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-purple sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-salmon"><span>Salmon!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-purple sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-aqua"><span>aqua!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Sherman2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-turquoise sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-green"><span>Green!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-turquoise sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-goldie"><span>Goldie!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+<a href="http://google.com">
+<div class="sms-tile sms-tri-tr sms-tallport2 sms-color-intranet-blue sms-text-light">
+	<div class="sms-ribbon-bl sms-ribbon-sunshine-yellow"><span>Sunshine!</span></div>
+	<div>Create and action enquiries</div>	
+	<img src="gfx/Chad2.jpg" width="180" height="175" alt="Some happy guy" style="position: absolute; bottom: 0" /> 
+</div>
+</a>
+
+</body>
+</html>
